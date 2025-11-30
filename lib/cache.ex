@@ -1,4 +1,4 @@
-defmodule AdventOfCodeTemplate.Cache do
+defmodule AdventOfCode2025.Cache do
   def init do
     Agent.start(fn -> %{} end)
   end

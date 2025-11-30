@@ -1,12 +1,12 @@
-defmodule AdventOfCodeTemplate.TemplateGenerator.Test do
+defmodule AdventOfCode2025.TemplateGenerator.Test do
   use ExUnit.Case, async: true
 
-  alias AdventOfCodeTemplate.TemplateGenerator
+  alias AdventOfCode2025.TemplateGenerator
 
   test "Generate a source template" do
     assert TemplateGenerator.source("42") == """
-           defmodule AdventOfCodeTemplate.Day42 do
-             alias AdventOfCodeTemplate.Helpers
+           defmodule AdventOfCode2025.Day42 do
+             alias AdventOfCode2025.Helpers
 
              def part_a(_lines) do
                -1
@@ -31,10 +31,10 @@ defmodule AdventOfCodeTemplate.TemplateGenerator.Test do
 
   test "Generate a test template" do
     assert TemplateGenerator.test("47") == """
-           defmodule AdventOfCodeTemplate.Day47Test do
+           defmodule AdventOfCode2025.Day47Test do
              use ExUnit.Case, async: true
 
-             alias AdventOfCodeTemplate.Day47
+             alias AdventOfCode2025.Day47
 
              @tag :skip
              test "Day47 part A example" do

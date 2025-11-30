@@ -1,7 +1,7 @@
-defmodule AdventOfCodeTemplate.CacheTest do
+defmodule AdventOfCode2025.CacheTest do
   use ExUnit.Case, async: true
 
-  alias AdventOfCodeTemplate.Cache
+  alias AdventOfCode2025.Cache
 
   test "an empty cache does not have any keys" do
     {:ok, cache} = Cache.init()

@@ -1,5 +1,5 @@
-defmodule AdventOfCodeTemplate.Cli do
-  @module_prefix "Elixir.AdventOfCodeTemplate.Day"
+defmodule AdventOfCode2025.Cli do
+  @module_prefix "Elixir.AdventOfCode2025.Day"
 
   def run_day(day_number) do
     get_day_module(day_number)
