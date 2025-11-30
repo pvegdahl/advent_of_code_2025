@@ -1,4 +1,4 @@
-defmodule AdventOfCode2024.Grid do
+defmodule AdventOfCode2025.Grid do
   def parse_string_grid(lines, exclude \\ ["."]) do
     lines
     |> Enum.with_index()

@@ -1,7 +1,7 @@
-defmodule AdventOfCode2024.HelpersTest do
+defmodule AdventOfCode2025.HelpersTest do
   use ExUnit.Case, async: true
 
-  alias AdventOfCode2024.Helpers
+  alias AdventOfCode2025.Helpers
 
   test "A reversed map of lists with one key and one value" do
     assert Helpers.reverse_map_of_lists(%{1 => [2]}) == %{2 => [1]}
