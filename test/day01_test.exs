@@ -25,8 +25,13 @@ defmodule AdventOfCode2025.Day01Test do
     |> Enum.map(&String.trim/1)
   end
 
-  @tag :skip
   test "Day01 part B example" do
-    assert Day01.part_b(example_input()) == 42
+    assert Day01.part_b(example_input()) == 6
+  end
+
+  describe "count_increment/3" do
+    test "big rotation" do
+      assert Day01.count_increment(50, :+, 1000) == 10
+    end
   end
 end

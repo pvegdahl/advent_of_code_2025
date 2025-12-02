@@ -4,13 +4,8 @@ defmodule AdventOfCode2025.Day01 do
   def part_a(lines) do
     lines
     |> parse_input()
-    |> Enum.scan(50, fn {direction, amount}, acc ->
-      case direction do
-        :+ -> Integer.mod(acc + amount, 100)
-        :- -> Integer.mod(acc - amount, 100)
-      end
-    end)
-    |> Enum.count(&(&1 == 0))
+    |> Enum.scan({50, 0}, &spin_it/2)
+    |> Enum.count(fn {value, _count} -> value == 0 end)
   end
 
   defp parse_input(lines) do
@@ -29,9 +24,35 @@ defmodule AdventOfCode2025.Day01 do
   defp direction_string_to_atom("R"), do: :+
   defp direction_string_to_atom("L"), do: :-
 
-  def part_b(_lines) do
-    -1
+  def part_b(lines) do
+    lines
+    |> parse_input()
+    |> Enum.scan({50, 0}, &spin_it/2)
+    |> List.last()
+    |> elem(1)
   end
+
+  defp spin_it({direction, amount}, {value, count}) do
+    new_value = move_unmodded(value, direction, amount) |> Integer.mod(100)
+    new_count = count + count_increment(value, direction, amount)
+
+    {new_value, new_count}
+  end
+
+  def count_increment(value, direction, amount) do
+    full_rotations = Integer.floor_div(amount, 100)
+    new_value_unmodded = move_unmodded(value, direction, Integer.mod(amount, 100))
+
+    cond do
+      value == 0 -> full_rotations
+      new_value_unmodded <= 0 -> full_rotations + 1
+      new_value_unmodded >= 100 -> full_rotations + 1
+      true -> full_rotations
+    end
+  end
+
+  defp move_unmodded(value, :+, amount), do: value + amount
+  defp move_unmodded(value, :-, amount), do: value - amount
 
   def a() do
     Helpers.file_to_lines!("inputs/day01.txt")
