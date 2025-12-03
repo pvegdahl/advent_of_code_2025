@@ -2,11 +2,10 @@ defmodule AdventOfCode2025.Day02 do
   alias AdventOfCode2025.Helpers
 
   def part_a(lines) do
-    ranges = lines |> parse_input()
-
-    ranges
+    lines
+    |> parse_input()
     |> Stream.concat()
-    |> Stream.filter(&invalid?/1)
+    |> Stream.filter(&invalid_part_a?/1)
     |> Enum.sum()
   end
 
@@ -23,20 +22,56 @@ defmodule AdventOfCode2025.Day02 do
     end)
   end
 
-  defp invalid?(num) do
+  defp invalid_part_a?(num) do
     num_string = Integer.to_string(num)
     size = String.length(num_string)
 
-    if Integer.mod(size, 2) == 1 do
-      false
+    if Integer.mod(size, 2) == 0 do
+      chunk_size = Integer.floor_div(size, 2)
+      invalid_for_chunks_of?(num_string, chunk_size)
     else
-      {front, back} = String.split_at(num_string, Integer.floor_div(size, 2))
-      front == back
+      false
     end
   end
 
-  def part_b(_lines) do
-    -1
+  def part_b(lines) do
+    lines
+    |> parse_input()
+    |> Stream.concat()
+    |> Stream.filter(&invalid_for_any_chunk_size?/1)
+    |> Enum.sum()
+  end
+
+  defp invalid_for_chunks_of?(num_string, chunk_size) do
+    size = String.length(num_string)
+
+    if Integer.mod(size, chunk_size) != 0 do
+      false
+    else
+      [front | rest] = string_chunk_by(num_string, chunk_size)
+      Enum.all?(rest, &(&1 == front))
+    end
+  end
+
+  defp string_chunk_by(string, chunk_size) do
+    if String.length(string) <= chunk_size do
+      [string]
+    else
+      {front_chunk, rest} = String.split_at(string, chunk_size)
+      [front_chunk | string_chunk_by(rest, chunk_size)]
+    end
+  end
+
+  def invalid_for_any_chunk_size?(num) do
+    num_string = Integer.to_string(num)
+    size = String.length(num_string)
+
+    if size == 1 do
+      false
+    else
+      max_chunk_size = Integer.floor_div(size, 2)
+      Enum.any?(1..max_chunk_size, &invalid_for_chunks_of?(num_string, &1))
+    end
   end
 
   def a() do

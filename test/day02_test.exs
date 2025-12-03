@@ -18,8 +18,17 @@ defmodule AdventOfCode2025.Day02Test do
     |> Enum.map(&String.trim/1)
   end
 
-  @tag :skip
   test "Day02 part B example" do
-    assert Day02.part_b(example_input()) == 42
+    assert Day02.part_b(example_input()) == 4_174_379_265
+  end
+
+  describe "invalid_for_any_chunk_size?/1" do
+    test "565656 is invalid at chunks of 2" do
+      assert Day02.invalid_for_any_chunk_size?(565_656)
+    end
+
+    test "single digits are not invalid" do
+      refute Day02.invalid_for_any_chunk_size?(7)
+    end
   end
 end
