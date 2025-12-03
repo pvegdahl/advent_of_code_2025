@@ -3,14 +3,16 @@ defmodule AdventOfCode2025.Day03Test do
 
   alias AdventOfCode2025.Day03
 
-  @tag :skip
   test "Day03 part A example" do
-    assert Day03.part_a(example_input()) == 42
+    assert Day03.part_a(example_input()) == 357
   end
 
   defp example_input() do
     """
-    TODO
+    987654321111111
+    811111111111119
+    234234234234278
+    818181911112111
     """
     |> String.trim()
     |> String.split("\n")
