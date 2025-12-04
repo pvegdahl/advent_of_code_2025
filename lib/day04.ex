@@ -3,12 +3,18 @@ defmodule AdventOfCode2025.Day04 do
   alias AdventOfCode2025.Grid
 
   def part_a(lines) do
-    points = Grid.parse_string_grid(lines) |> Map.get("@")
+    lines
+    |> Grid.parse_string_grid()
+    |> Map.get("@")
+    |> accessible_points()
+    |> Enum.count()
+  end
 
+  defp accessible_points(points) do
     points
     |> Enum.map(&count_neighbors(&1, points))
     |> Enum.filter(fn {_point, point_count} -> point_count < 4 end)
-    |> Enum.count()
+    |> Enum.map(fn {point, _point_count} -> point end)
   end
 
   defp count_neighbors(point, points) do
@@ -21,8 +27,25 @@ defmodule AdventOfCode2025.Day04 do
     {point, point_count}
   end
 
-  def part_b(_lines) do
-    -1
+  def part_b(lines) do
+    points = Grid.parse_string_grid(lines) |> Map.get("@")
+    final_points = keep_pruning(points)
+
+    Enum.count(points) - Enum.count(final_points)
+  end
+
+  defp keep_pruning(points) do
+    pruned_points = prune_points(points)
+
+    if points == pruned_points do
+      points
+    else
+      keep_pruning(pruned_points)
+    end
+  end
+
+  defp prune_points(points) do
+    MapSet.difference(points, MapSet.new(accessible_points(points)))
   end
 
   def a() do
