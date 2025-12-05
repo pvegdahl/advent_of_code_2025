@@ -1,13 +1,7 @@
 defmodule AdventOfCode2025.Day02 do
   alias AdventOfCode2025.Helpers
 
-  def part_a(lines) do
-    lines
-    |> parse_input()
-    |> Stream.concat()
-    |> Stream.filter(&invalid_part_a?/1)
-    |> Enum.sum()
-  end
+  def part_a(lines), do: do_it(lines, &invalid_part_a?/1)
 
   defp parse_input(lines) do
     Enum.join(lines, "")
@@ -34,11 +28,17 @@ defmodule AdventOfCode2025.Day02 do
     end
   end
 
-  def part_b(lines) do
+  def part_b(lines), do: do_it(lines, &invalid_for_any_chunk_size?/1)
+
+  defp do_it(lines, invalid_func) do
     lines
     |> parse_input()
-    |> Stream.concat()
-    |> Stream.filter(&invalid_for_any_chunk_size?/1)
+    |> Task.async_stream(fn numbers ->
+      numbers
+      |> Enum.filter(invalid_func)
+      |> Enum.sum()
+    end)
+    |> Enum.map(fn {:ok, sub_sum} -> sub_sum end)
     |> Enum.sum()
   end
 
