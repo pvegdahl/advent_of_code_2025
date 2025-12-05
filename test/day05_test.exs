@@ -26,8 +26,7 @@ defmodule AdventOfCode2025.Day05Test do
     |> Enum.map(&String.trim/1)
   end
 
-  @tag :skip
   test "Day05 part B example" do
-    assert Day05.part_b(example_input()) == 42
+    assert Day05.part_b(example_input()) == 14
   end
 end

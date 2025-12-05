@@ -28,8 +28,35 @@ defmodule AdventOfCode2025.Day05 do
 
   defp is_fresh?(ingredient, fresh_ranges), do: Enum.any?(fresh_ranges, &(ingredient in &1))
 
-  def part_b(_lines) do
-    -1
+  def part_b(lines) do
+    {fresh_ranges, _ingredient_list} = parse_input(lines)
+
+    fresh_ranges
+    |> merge_all_ranges()
+    |> Enum.map(&Enum.count/1)
+    |> Enum.sum()
+  end
+
+  defp merge_all_ranges(ranges) do
+    Enum.reduce(ranges, [], fn range, acc ->
+      merge_new_range(range, acc)
+    end)
+  end
+
+  defp merge_new_range(new_range, ranges) do
+    Enum.reduce(ranges, [new_range], fn range, [newest_range | tail] ->
+      maybe_merge_ranges(newest_range, range) ++ tail
+    end)
+  end
+
+  defp maybe_merge_ranges(range1, range2) do
+    if Range.disjoint?(range1, range2) do
+      [range1, range2]
+    else
+      a1..b1//_ = range1
+      a2..b2//_ = range2
+      [min(a1, a2)..max(b1, b2)]
+    end
   end
 
   def a() do
