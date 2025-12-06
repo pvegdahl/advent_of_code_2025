@@ -16,7 +16,6 @@ defmodule AdventOfCode2025.Day06Test do
     """
     |> String.trim()
     |> String.split("\n")
-    |> Enum.map(&String.trim/1)
   end
 
   describe "parse_input_a/1" do
@@ -32,5 +31,16 @@ defmodule AdventOfCode2025.Day06Test do
 
   test "Day06 part B example" do
     assert Day06.part_b(example_input()) == 3_263_827
+  end
+
+  describe "parse_input_b/1" do
+    test "example input" do
+      assert Day06.parse_input_b(example_input()) == [
+               {:*, [356, 24, 1]},
+               {:+, [8, 248, 369]},
+               {:*, [175, 581, 32]},
+               {:+, [4, 431, 623]}
+             ]
+    end
   end
 end
