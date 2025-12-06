@@ -3,12 +3,12 @@ defmodule AdventOfCode2025.Day06 do
 
   def part_a(lines) do
     lines
-    |> parse_input()
+    |> parse_input_a()
     |> Enum.map(&do_math/1)
     |> Enum.sum()
   end
 
-  def parse_input(lines) do
+  def parse_input_a(lines) do
     {number_lines, [operand_line]} = Enum.split(lines, -1)
 
     rotated_numbers = number_lines |> Enum.map(&Helpers.string_to_int_list/1) |> rotate_list_matrix()

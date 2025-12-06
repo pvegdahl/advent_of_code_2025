@@ -19,9 +19,9 @@ defmodule AdventOfCode2025.Day06Test do
     |> Enum.map(&String.trim/1)
   end
 
-  describe "parse_input/1" do
+  describe "parse_input_a/1" do
     test "example input" do
-      assert Day06.parse_input(example_input()) == [
+      assert Day06.parse_input_a(example_input()) == [
                {:*, [123, 45, 6]},
                {:+, [328, 64, 98]},
                {:*, [51, 387, 215]},
@@ -30,8 +30,7 @@ defmodule AdventOfCode2025.Day06Test do
     end
   end
 
-  @tag :skip
   test "Day06 part B example" do
-    assert Day06.part_b(example_input()) == 42
+    assert Day06.part_b(example_input()) == 3_263_827
   end
 end
