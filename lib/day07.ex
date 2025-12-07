@@ -5,15 +5,15 @@ defmodule AdventOfCode2025.Day07 do
   def part_a(lines) do
     {start_x, splitters} = parse_input(lines)
 
-    {_beams, count} = run_the_machine(start_x, splitters)
+    {_beams, count} = run_the_machine_a(start_x, splitters)
     count
   end
 
-  defp run_the_machine(start_x, splitters) do
+  defp run_the_machine_a(start_x, splitters) do
     max_row = max_row(splitters)
 
     Enum.reduce(1..max_row, {MapSet.new([start_x]), 0}, fn row, {beams, count} ->
-      {new_beams, added_count} = next_line(beams, splitters, row)
+      {new_beams, added_count} = next_line_a(beams, splitters, row)
 
       {new_beams, count + added_count}
     end)
@@ -34,8 +34,8 @@ defmodule AdventOfCode2025.Day07 do
     |> Enum.max()
   end
 
-  def next_line(beams, splitters, row) do
-    beams_split = Enum.filter(beams, fn beam_x -> MapSet.member?(splitters, {beam_x, row}) end) |> MapSet.new()
+  def next_line_a(beams, splitters, row) do
+    beams_split = MapSet.filter(beams, fn beam_x -> MapSet.member?(splitters, {beam_x, row}) end)
     added_beams = Enum.flat_map(beams_split, fn beam -> [beam - 1, beam + 1] end) |> MapSet.new()
 
     new_beams =
@@ -46,8 +46,29 @@ defmodule AdventOfCode2025.Day07 do
     {new_beams, MapSet.size(beams_split)}
   end
 
-  def part_b(_lines) do
-    -1
+  def part_b(lines) do
+    {start_x, splitters} = parse_input(lines)
+
+    run_the_machine_b(start_x, splitters)
+    |> Map.values()
+    |> Enum.sum()
+  end
+
+  defp run_the_machine_b(start_x, splitters) do
+    max_row = max_row(splitters)
+
+    Enum.reduce(1..max_row, %{start_x => 1}, fn row, beams -> next_line_b(beams, splitters, row) end)
+  end
+
+  def next_line_b(beams, splitters, row) do
+    beams_split = Map.filter(beams, fn {beam_x, _count} -> MapSet.member?(splitters, {beam_x, row}) end)
+    added_beams = Enum.flat_map(beams_split, fn {beam, count} -> [{beam - 1, count}, {beam + 1, count}] end)
+
+    beams_minus_splits = Map.drop(beams, Map.keys(beams_split))
+
+    Enum.reduce(added_beams, beams_minus_splits, fn {beam_x, count}, new_beams ->
+      Map.update(new_beams, beam_x, count, fn old_count -> old_count + count end)
+    end)
   end
 
   def a() do
