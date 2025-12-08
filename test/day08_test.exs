@@ -4,7 +4,7 @@ defmodule AdventOfCode2025.Day08Test do
   alias AdventOfCode2025.Day08
 
   test "Day08 part A example" do
-    assert Day08.part_a(example_input()) == 40
+    assert Day08.part_a(example_input(), 10) == 40
   end
 
   defp example_input() do
@@ -33,6 +33,12 @@ defmodule AdventOfCode2025.Day08Test do
     |> String.trim()
     |> String.split("\n")
     |> Enum.map(&String.trim/1)
+  end
+
+  describe "pairs/1" do
+    test "builds the pairs" do
+      assert Day08.pairs([1, 2, 3, 4]) == [{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}]
+    end
   end
 
   @tag :skip

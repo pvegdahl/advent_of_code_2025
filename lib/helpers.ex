@@ -4,9 +4,9 @@ defmodule AdventOfCode2025.Helpers do
     |> Enum.map(&String.trim/1)
   end
 
-  def string_to_int_list(integers_string) do
+  def string_to_int_list(integers_string, splitter \\ " ") do
     integers_string
-    |> String.split(" ", trim: true)
+    |> String.split(splitter, trim: true)
     |> Enum.map(&String.to_integer/1)
   end
 
