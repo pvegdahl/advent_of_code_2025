@@ -6,7 +6,7 @@ defmodule AdventOfCode2025.Day08 do
 
     closest_point_pairs =
       points
-      |> pairs()
+      |> Helpers.pairs()
       |> Enum.sort_by(fn {point0, point1} -> distance_squared(point0, point1) end)
       |> Enum.take(connection_count)
 
@@ -33,15 +33,6 @@ defmodule AdventOfCode2025.Day08 do
     dx * dx + dy * dy + dz * dz
   end
 
-  def pairs(list) do
-    list_as_tuple = List.to_tuple(list)
-    max_index = tuple_size(list_as_tuple) - 1
-
-    for i <- 0..(max_index - 1), j <- (i + 1)..max_index do
-      {elem(list_as_tuple, i), elem(list_as_tuple, j)}
-    end
-  end
-
   defp group_points(points, point_pairs) do
     initial_groups = Map.new(points, &{&1, MapSet.new([&1])})
 
@@ -60,7 +51,7 @@ defmodule AdventOfCode2025.Day08 do
 
     sorted_point_pairs =
       points
-      |> pairs()
+      |> Helpers.pairs()
       |> Enum.sort_by(fn {point0, point1} -> distance_squared(point0, point1) end)
 
     {{x0, _y0, _z0}, {x1, _y1, _z1}} = last_pair_to_connect_everything(points, sorted_point_pairs)

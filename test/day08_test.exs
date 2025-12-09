@@ -35,12 +35,6 @@ defmodule AdventOfCode2025.Day08Test do
     |> Enum.map(&String.trim/1)
   end
 
-  describe "pairs/1" do
-    test "builds the pairs" do
-      assert Day08.pairs([1, 2, 3, 4]) == [{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}]
-    end
-  end
-
   test "Day08 part B example" do
     assert Day08.part_b(example_input()) == 25272
   end

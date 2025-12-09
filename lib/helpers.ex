@@ -20,4 +20,13 @@ defmodule AdventOfCode2025.Helpers do
   def merge_maps_with_sum(maps) do
     Enum.reduce(maps, fn map1, map2 -> Map.merge(map1, map2, fn _k, v1, v2 -> v1 + v2 end) end)
   end
+
+  def pairs(list) do
+    list_as_tuple = List.to_tuple(list)
+    max_index = tuple_size(list_as_tuple) - 1
+
+    for i <- 0..(max_index - 1), j <- (i + 1)..max_index do
+      {elem(list_as_tuple, i), elem(list_as_tuple, j)}
+    end
+  end
 end

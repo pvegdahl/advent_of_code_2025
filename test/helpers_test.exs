@@ -21,4 +21,10 @@ defmodule AdventOfCode2025.HelpersTest do
              6 => [0]
            }
   end
+
+  describe "pairs/1" do
+    test "builds the pairs" do
+      assert Helpers.pairs([1, 2, 3, 4]) == [{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}]
+    end
+  end
 end
