@@ -41,8 +41,7 @@ defmodule AdventOfCode2025.Day08Test do
     end
   end
 
-  @tag :skip
   test "Day08 part B example" do
-    assert Day08.part_b(example_input()) == 42
+    assert Day08.part_b(example_input()) == 25272
   end
 end

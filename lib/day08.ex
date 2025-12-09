@@ -55,8 +55,36 @@ defmodule AdventOfCode2025.Day08 do
     end)
   end
 
-  def part_b(_lines) do
-    -1
+  def part_b(lines) do
+    points = parse_input(lines)
+
+    sorted_point_pairs =
+      points
+      |> pairs()
+      |> Enum.sort_by(fn {point0, point1} -> distance_squared(point0, point1) end)
+
+    {{x0, _y0, _z0}, {x1, _y1, _z1}} = last_pair_to_connect_everything(points, sorted_point_pairs)
+
+    x0 * x1
+  end
+
+  defp last_pair_to_connect_everything(points, sorted_point_pairs) do
+    target_size = Enum.count(points)
+
+    initial_groups = Map.new(points, &{&1, MapSet.new([&1])})
+
+    Enum.reduce_while(sorted_point_pairs, initial_groups, fn {point0, point1}, groups ->
+      group0 = Map.get(groups, point0)
+      group1 = Map.get(groups, point1)
+      new_group = MapSet.union(group0, group1)
+
+      if MapSet.size(new_group) == target_size do
+        {:halt, {point0, point1}}
+      else
+        new_entries = Map.new(new_group, fn point -> {point, new_group} end)
+        {:cont, Map.merge(groups, new_entries)}
+      end
+    end)
   end
 
   def a() do
