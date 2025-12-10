@@ -67,7 +67,12 @@ defmodule AdventOfCode2025.Day09 do
   end
 
   defp count_vertical_intersections(verticals, {x, y}, max_x) do
-    Enum.count(x..max_x, fn specific_x -> intersects_vertical?(verticals, {specific_x, y}) end)
+    possible_xs =
+      verticals
+      |> Map.keys()
+      |> Enum.filter(fn candidate_x -> candidate_x in x..max_x end)
+
+    Enum.count(possible_xs, fn specific_x -> intersects_vertical?(verticals, {specific_x, y}) end)
   end
 
   defp vertical_and_horizontal_line_maps(polygon) do
