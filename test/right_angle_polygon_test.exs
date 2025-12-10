@@ -139,4 +139,26 @@ defmodule AdventOfCode2025.RightAnglePolygonTest do
       refute RightAnglePolygon.vertical_line_inside?(h, 5, 6..7)
     end
   end
+
+  describe "rectangle_inside?/2" do
+    setup :setup_h
+
+    test "simple inside", %{h: h} do
+      assert RightAnglePolygon.rectangle_inside?(h, {{0, 0}, {2, 2}})
+      assert RightAnglePolygon.rectangle_inside?(h, {{2, 2}, {0, 0}})
+      assert RightAnglePolygon.rectangle_inside?(h, {{0, 2}, {2, 0}})
+      assert RightAnglePolygon.rectangle_inside?(h, {{2, 0}, {0, 2}})
+    end
+
+    test "simple outside", %{h: h} do
+      refute RightAnglePolygon.rectangle_inside?(h, {{3, 3}, {6, 6}})
+      refute RightAnglePolygon.rectangle_inside?(h, {{6, 6}, {3, 3}})
+      refute RightAnglePolygon.rectangle_inside?(h, {{6, 3}, {3, 6}})
+      refute RightAnglePolygon.rectangle_inside?(h, {{3, 6}, {6, 3}})
+    end
+
+    test "overlapping", %{h: h} do
+      refute RightAnglePolygon.rectangle_inside?(h, {{3, 3}, {10, 6}})
+    end
+  end
 end

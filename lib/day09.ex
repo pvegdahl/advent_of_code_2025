@@ -1,5 +1,6 @@
 defmodule AdventOfCode2025.Day09 do
   alias AdventOfCode2025.Helpers
+  alias AdventOfCode2025.RightAnglePolygon
 
   def part_a(lines) do
     lines
@@ -25,8 +26,8 @@ defmodule AdventOfCode2025.Day09 do
     dx * dy
   end
 
-  def part_b(_lines) do
-    -1
+  def part_b(lines) do
+    points = parse_input(lines)
   end
 
   def a() do

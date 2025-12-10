@@ -43,6 +43,16 @@ defmodule AdventOfCode2025.RightAnglePolygon do
     {verticals, horizontals}
   end
 
+  def rectangle_inside?(%__MODULE__{} = polygon, {{x0, y0}, {x1, y1}} = _rectangle) do
+    [min_x, max_x] = Enum.sort([x0, x1])
+    [min_y, max_y] = Enum.sort([y0, y1])
+
+    horizontal_line_inside?(polygon, min_x..max_x, min_y) and
+      horizontal_line_inside?(polygon, min_x..max_x, max_y) and
+      vertical_line_inside?(polygon, min_x, min_y..max_y) and
+      vertical_line_inside?(polygon, max_x, min_y..max_y)
+  end
+
   # This head always works, but it is inefficient as the x range grows
   def horizontal_line_inside?(%__MODULE__{} = polygon, x0..x1//1, y) when x1 - x0 < 8 do
     x0..x1
