@@ -29,25 +29,23 @@ defmodule AdventOfCode2025.Day09 do
     -1
   end
 
-  def contains?(polygon, {{x0, y0}, {x1, y1}} = _rectangle) do
-    {min_x, max_x} = polygon |> Enum.map(&elem(&1, 0)) |> Enum.min_max()
-    {min_y, max_y} = polygon |> Enum.map(&elem(&1, 1)) |> Enum.min_max()
-
-    # So dumb!
-    x1 < max_x
-  end
+  #  def contains?(polygon, {{x0, y0}, {x1, y1}} = _rectangle) do
+  #    {min_x, max_x} = polygon |> Enum.map(&elem(&1, 0)) |> Enum.min_max()
+  #    {min_y, max_y} = polygon |> Enum.map(&elem(&1, 1)) |> Enum.min_max()
+  #
+  #    # So dumb!
+  #    x1 < max_x
+  #  end
 
   def point_in_polygon?(polygon, point, max_x) do
     verticals = vertical_line_map(polygon)
 
     if intersects_vertical?(verticals, point) do
-      IO.inspect(point, label: "point")
       true
     else
       intersections = count_intersections(verticals, point, max_x)
       Integer.mod(intersections, 2) == 1
     end
-
   end
 
   defp intersects_vertical?(verticals, {x, y}) do
@@ -58,7 +56,7 @@ defmodule AdventOfCode2025.Day09 do
   end
 
   defp count_intersections(verticals, {x, y}, max_x) do
-    Enum.count(x..max_x, fn specific_x -> intersects_vertical?(verticals, {specific_x, y}) end) |> IO.inspect()
+    Enum.count(x..max_x, fn specific_x -> intersects_vertical?(verticals, {specific_x, y}) end)
   end
 
   defp vertical_line_map(polygon) do
