@@ -77,31 +77,66 @@ defmodule AdventOfCode2025.RightAnglePolygonTest do
     setup :setup_h
 
     test "simple inside the h", %{h: h} do
-      assert RightAnglePolygon.horizontal_line_inside?(h, 3, 7, 0)
+      assert RightAnglePolygon.horizontal_line_inside?(h, 3..7, 0)
     end
 
     test "simple outside the h", %{h: h} do
-      refute RightAnglePolygon.horizontal_line_inside?(h, 3, 7, 5)
+      refute RightAnglePolygon.horizontal_line_inside?(h, 3..7, 5)
     end
 
     test "On the line", %{h: h} do
-      assert RightAnglePolygon.horizontal_line_inside?(h, 3, 7, 2)
-      assert RightAnglePolygon.horizontal_line_inside?(h, 3, 7, -2)
+      assert RightAnglePolygon.horizontal_line_inside?(h, 3..7, 2)
+      assert RightAnglePolygon.horizontal_line_inside?(h, 3..7, -2)
     end
 
     test "On and off the line inside", %{h: h} do
-      assert RightAnglePolygon.horizontal_line_inside?(h, 0, 10, -2)
-      assert RightAnglePolygon.horizontal_line_inside?(h, 0, 10, 2)
+      assert RightAnglePolygon.horizontal_line_inside?(h, 0..10, -2)
+      assert RightAnglePolygon.horizontal_line_inside?(h, 0..10, 2)
     end
 
     test "On and off outside", %{h: h} do
-      refute RightAnglePolygon.horizontal_line_inside?(h, 0, 10, -5)
-      refute RightAnglePolygon.horizontal_line_inside?(h, 0, 10, 5)
+      refute RightAnglePolygon.horizontal_line_inside?(h, 0..10, -5)
+      refute RightAnglePolygon.horizontal_line_inside?(h, 0..10, 5)
     end
 
     test "line of size 2", %{h: h} do
-      assert RightAnglePolygon.horizontal_line_inside?(h, 6, 7, 0)
-      refute RightAnglePolygon.horizontal_line_inside?(h, 6, 7, 5)
+      assert RightAnglePolygon.horizontal_line_inside?(h, 6..7, 0)
+      refute RightAnglePolygon.horizontal_line_inside?(h, 6..7, 5)
+    end
+  end
+
+  describe "vertical_line_inside?/4" do
+    setup :setup_h
+
+    test "simple inside the h", %{h: h} do
+      assert RightAnglePolygon.vertical_line_inside?(h, 1, 0..7)
+    end
+
+    test "simple outside the h", %{h: h} do
+      refute RightAnglePolygon.vertical_line_inside?(h, 3, 4..7)
+    end
+
+    test "On the line", %{h: h} do
+      assert RightAnglePolygon.vertical_line_inside?(h, 2, 2..10)
+      assert RightAnglePolygon.vertical_line_inside?(h, 8, 2..10)
+      assert RightAnglePolygon.vertical_line_inside?(h, 2, -10..-2)
+      assert RightAnglePolygon.vertical_line_inside?(h, 8, -10..-2)
+      assert RightAnglePolygon.vertical_line_inside?(h, 0, -10..10)
+      assert RightAnglePolygon.vertical_line_inside?(h, 10, -10..10)
+    end
+
+    test "On and off the line inside", %{h: h} do
+      assert RightAnglePolygon.vertical_line_inside?(h, 2, -5..5)
+      assert RightAnglePolygon.vertical_line_inside?(h, 8, -5..5)
+    end
+
+    test "On and off outside", %{h: h} do
+      refute RightAnglePolygon.vertical_line_inside?(h, 5, -5..5)
+    end
+
+    test "line of size 2", %{h: h} do
+      assert RightAnglePolygon.vertical_line_inside?(h, 1, 2..3)
+      refute RightAnglePolygon.vertical_line_inside?(h, 5, 6..7)
     end
   end
 end

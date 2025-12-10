@@ -44,13 +44,13 @@ defmodule AdventOfCode2025.RightAnglePolygon do
   end
 
   # This head always works, but it is inefficient as the x range grows
-  def horizontal_line_inside?(%__MODULE__{} = polygon, x0, x1, y) when x1 - x0 <= 8 do
+  def horizontal_line_inside?(%__MODULE__{} = polygon, x0..x1//1, y) when x1 - x0 < 8 do
     x0..x1
     |> Enum.map(&{&1, y})
     |> Enum.all?(&point_inside?(polygon, &1))
   end
 
-  def horizontal_line_inside?(%__MODULE__{} = polygon, x0, x1, y) do
+  def horizontal_line_inside?(%__MODULE__{} = polygon, x0..x1//1, y) do
     x_range = (x0 + 2)..(x1 - 2)
 
     points_of_interest =
@@ -61,6 +61,28 @@ defmodule AdventOfCode2025.RightAnglePolygon do
       |> Enum.concat([x0, x0 + 1, x1 - 1, x1])
       |> Enum.uniq()
       |> Enum.map(&{&1, y})
+
+    Enum.all?(points_of_interest, &point_inside?(polygon, &1))
+  end
+
+  # This head always works, but it is inefficient as the x range grows
+  def vertical_line_inside?(%__MODULE__{} = polygon, x, y0..y1//1) when y1 - y0 < 8 do
+    y0..y1
+    |> Enum.map(&{x, &1})
+    |> Enum.all?(&point_inside?(polygon, &1))
+  end
+
+  def vertical_line_inside?(%__MODULE__{} = polygon, x, y0..y1//1) do
+    y_range = (y0 + 2)..(y1 - 2)
+
+    points_of_interest =
+      polygon.horizontals
+      |> Map.keys()
+      |> Enum.filter(&(&1 in y_range))
+      |> Enum.flat_map(&[&1 - 1, &1 + 1])
+      |> Enum.concat([y0, y0 + 1, y1 - 1, y1])
+      |> Enum.uniq()
+      |> Enum.map(&{x, &1})
 
     Enum.all?(points_of_interest, &point_inside?(polygon, &1))
   end
