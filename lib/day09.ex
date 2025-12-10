@@ -38,14 +38,18 @@ defmodule AdventOfCode2025.Day09 do
   #  end
 
   def point_in_polygon?(polygon, point, max_x) do
-    verticals = vertical_line_map(polygon)
+    {verticals, horizontals} = vertical_and_horizontal_line_maps(polygon)
 
-    if intersects_vertical?(verticals, point) do
+    if point_on_edge?(verticals, horizontals, point) do
       true
     else
-      intersections = count_intersections(verticals, point, max_x)
+      intersections = count_vertical_intersections(verticals, point, max_x)
       Integer.mod(intersections, 2) == 1
     end
+  end
+
+  defp point_on_edge?(verticals, horizontals, point) do
+    intersects_vertical?(verticals, point) or intersects_horizontal?(horizontals, point)
   end
 
   defp intersects_vertical?(verticals, {x, y}) do
@@ -55,18 +59,40 @@ defmodule AdventOfCode2025.Day09 do
     end
   end
 
-  defp count_intersections(verticals, {x, y}, max_x) do
+  defp intersects_horizontal?(horizontals, {x, y}) do
+    case Map.get(horizontals, y) do
+      nil -> false
+      range -> x in range
+    end
+  end
+
+  defp count_vertical_intersections(verticals, {x, y}, max_x) do
     Enum.count(x..max_x, fn specific_x -> intersects_vertical?(verticals, {specific_x, y}) end)
   end
 
-  defp vertical_line_map(polygon) do
-    polygon
-    |> Enum.chunk_every(2, 1, Enum.take(polygon, 1))
-    |> Enum.filter(fn [{x0, _y0}, {x1, _y1}] -> x0 == x1 end)
-    |> Map.new(fn [{x, y0}, {x, y1}] ->
-      [y00, y01] = Enum.sort([y0, y1])
-      {x, y00..y01}
-    end)
+  defp vertical_and_horizontal_line_maps(polygon) do
+    groups =
+      polygon
+      |> Enum.chunk_every(2, 1, Enum.take(polygon, 1))
+      |> Enum.group_by(fn [{x0, _y0}, {x1, _y1}] -> x0 == x1 end)
+
+    vertical_map =
+      groups
+      |> Map.get(true, [])
+      |> Map.new(fn [{x, y0}, {x, y1}] ->
+        [y00, y01] = Enum.sort([y0, y1])
+        {x, y00..y01}
+      end)
+
+    horizontal_map =
+      groups
+      |> Map.get(false, [])
+      |> Map.new(fn [{x0, y}, {x1, y}] ->
+        [x00, x01] = Enum.sort([x0, x1])
+        {y, x00..x01}
+      end)
+
+    {vertical_map, horizontal_map}
   end
 
   def a() do
