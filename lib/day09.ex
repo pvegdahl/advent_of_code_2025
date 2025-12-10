@@ -55,14 +55,14 @@ defmodule AdventOfCode2025.Day09 do
   defp intersects_vertical?(verticals, {x, y}) do
     case Map.get(verticals, x) do
       nil -> false
-      range -> y in range
+      ranges -> Enum.any?(ranges, fn range -> y in range end)
     end
   end
 
   defp intersects_horizontal?(horizontals, {x, y}) do
     case Map.get(horizontals, y) do
       nil -> false
-      range -> x in range
+      ranges -> Enum.any?(ranges, fn range -> x in range end)
     end
   end
 
@@ -79,18 +79,20 @@ defmodule AdventOfCode2025.Day09 do
     vertical_map =
       groups
       |> Map.get(true, [])
-      |> Map.new(fn [{x, y0}, {x, y1}] ->
+      |> Enum.map(fn [{x, y0}, {x, y1}] ->
         [y00, y01] = Enum.sort([y0, y1])
         {x, y00..y01}
       end)
+      |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
 
     horizontal_map =
       groups
       |> Map.get(false, [])
-      |> Map.new(fn [{x0, y}, {x1, y}] ->
+      |> Enum.map(fn [{x0, y}, {x1, y}] ->
         [x00, x01] = Enum.sort([x0, x1])
         {y, x00..x01}
       end)
+      |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
 
     {vertical_map, horizontal_map}
   end

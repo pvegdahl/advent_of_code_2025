@@ -46,7 +46,23 @@ defmodule AdventOfCode2025.Day09Test do
 
   describe "point_in_polygon?/2" do
     setup do
-      %{the_u: [{0, 0}, {10, 0}, {10, 10}, {8, 10}, {8, 2}, {2, 2}, {2, 10}, {0, 10}]}
+      %{
+        u: [{0, 0}, {10, 0}, {10, 10}, {8, 10}, {8, 2}, {2, 2}, {2, 10}, {0, 10}],
+        h: [
+          {0, -10},
+          {2, -10},
+          {2, -2},
+          {8, -2},
+          {8, -10},
+          {10, -10},
+          {10, 10},
+          {8, 10},
+          {8, 2},
+          {2, 2},
+          {2, 10},
+          {0, 10}
+        ]
+      }
     end
 
     test "simple inside" do
@@ -55,28 +71,40 @@ defmodule AdventOfCode2025.Day09Test do
       assert Day09.point_in_polygon?(polygon, {5, 5}, 10)
     end
 
-    test "outside the U", %{the_u: the_u} do
-      refute Day09.point_in_polygon?(the_u, {5, 5}, 10)
+    test "outside the U", %{u: u} do
+      refute Day09.point_in_polygon?(u, {5, 5}, 10)
     end
 
-    test "inside the U", %{the_u: the_u} do
-      assert Day09.point_in_polygon?(the_u, {1, 5}, 10)
-      assert Day09.point_in_polygon?(the_u, {9, 5}, 10)
-      assert Day09.point_in_polygon?(the_u, {5, 1}, 10)
+    test "inside the U", %{u: u} do
+      assert Day09.point_in_polygon?(u, {1, 5}, 10)
+      assert Day09.point_in_polygon?(u, {9, 5}, 10)
+      assert Day09.point_in_polygon?(u, {5, 1}, 10)
     end
 
-    test "on a vertical edge of the U", %{the_u: the_u} do
-      assert Day09.point_in_polygon?(the_u, {0, 5}, 10)
-      assert Day09.point_in_polygon?(the_u, {2, 5}, 10)
-      assert Day09.point_in_polygon?(the_u, {8, 2}, 10)
-      assert Day09.point_in_polygon?(the_u, {10, 10}, 10)
+    test "on a vertical edge of the U", %{u: u} do
+      assert Day09.point_in_polygon?(u, {0, 5}, 10)
+      assert Day09.point_in_polygon?(u, {2, 5}, 10)
+      assert Day09.point_in_polygon?(u, {8, 2}, 10)
+      assert Day09.point_in_polygon?(u, {10, 10}, 10)
     end
 
-    test "on a horizontal edge of the U", %{the_u: the_u} do
-      assert Day09.point_in_polygon?(the_u, {5, 0}, 10)
-      assert Day09.point_in_polygon?(the_u, {1, 10}, 10)
-      assert Day09.point_in_polygon?(the_u, {5, 2}, 10)
-      assert Day09.point_in_polygon?(the_u, {9, 10}, 10)
+    test "on a horizontal edge of the U", %{u: u} do
+      assert Day09.point_in_polygon?(u, {5, 0}, 10)
+      assert Day09.point_in_polygon?(u, {1, 10}, 10)
+      assert Day09.point_in_polygon?(u, {5, 2}, 10)
+      assert Day09.point_in_polygon?(u, {9, 10}, 10)
+    end
+
+    test "on a line in the H", %{h: h} do
+      assert Day09.point_in_polygon?(h, {2, -5}, 10)
+      assert Day09.point_in_polygon?(h, {2, 5}, 10)
+      assert Day09.point_in_polygon?(h, {8, -5}, 10)
+      assert Day09.point_in_polygon?(h, {8, 5}, 10)
+    end
+
+    test "outside the H", %{h: h} do
+      refute Day09.point_in_polygon?(h, {5, 5}, 10)
+      refute Day09.point_in_polygon?(h, {5, -5}, 10)
     end
   end
 end
