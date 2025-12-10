@@ -98,5 +98,10 @@ defmodule AdventOfCode2025.RightAnglePolygonTest do
       refute RightAnglePolygon.horizontal_line_inside?(h, 0, 10, -5)
       refute RightAnglePolygon.horizontal_line_inside?(h, 0, 10, 5)
     end
+
+    test "line of size 2", %{h: h} do
+      assert RightAnglePolygon.horizontal_line_inside?(h, 6, 7, 0)
+      refute RightAnglePolygon.horizontal_line_inside?(h, 6, 7, 5)
+    end
   end
 end
