@@ -7,7 +7,13 @@ defmodule AdventOfCode2025.RightAnglePolygon do
     {min_x, max_x} = verticals |> Map.keys() |> Enum.min_max()
     {min_y, max_y} = horizontals |> Map.keys() |> Enum.min_max()
 
-    %__MODULE__{point_list: point_list, verticals: verticals, horizontals: horizontals, x_range: min_x..max_x, y_range: min_y..max_y}
+    %__MODULE__{
+      point_list: point_list,
+      verticals: verticals,
+      horizontals: horizontals,
+      x_range: min_x..max_x,
+      y_range: min_y..max_y
+    }
   end
 
   defp vertical_and_horizontal_line_maps(point_list) do
@@ -35,6 +41,11 @@ defmodule AdventOfCode2025.RightAnglePolygon do
       |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
 
     {verticals, horizontals}
+  end
+
+  def horizontal_line_inside?(%__MODULE__{} = polygon, x0, x1, y) do
+    points_of_interest = Enum.map(x0..x1, &{&1, y})
+    Enum.all?(points_of_interest, &point_inside?(polygon, &1))
   end
 
   def point_inside?(%__MODULE__{} = polygon, point) do

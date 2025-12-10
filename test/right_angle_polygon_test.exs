@@ -9,20 +9,21 @@ defmodule AdventOfCode2025.RightAnglePolygonTest do
 
   defp setup_h(_) do
     %{
-      h: RightAnglePolygon.new([
-        {0, -10},
-        {2, -10},
-        {2, -2},
-        {8, -2},
-        {8, -10},
-        {10, -10},
-        {10, 10},
-        {8, 10},
-        {8, 2},
-        {2, 2},
-        {2, 10},
-        {0, 10}
-      ])
+      h:
+        RightAnglePolygon.new([
+          {0, -10},
+          {2, -10},
+          {2, -2},
+          {8, -2},
+          {8, -10},
+          {10, -10},
+          {10, 10},
+          {8, 10},
+          {8, 2},
+          {2, 2},
+          {2, 10},
+          {0, 10}
+        ])
     }
   end
 
@@ -72,6 +73,30 @@ defmodule AdventOfCode2025.RightAnglePolygonTest do
     end
   end
 
-  describe "line_in_polygon?/2" do
+  describe "horizontal_line_inside?/4" do
+    setup :setup_h
+
+    test "simple inside the h", %{h: h} do
+      assert RightAnglePolygon.horizontal_line_inside?(h, 3, 7, 0)
+    end
+
+    test "simple outside the h", %{h: h} do
+      refute RightAnglePolygon.horizontal_line_inside?(h, 3, 7, 5)
+    end
+
+    test "On the line", %{h: h} do
+      assert RightAnglePolygon.horizontal_line_inside?(h, 3, 7, 2)
+      assert RightAnglePolygon.horizontal_line_inside?(h, 3, 7, -2)
+    end
+
+    test "On and off the line inside", %{h: h} do
+      assert RightAnglePolygon.horizontal_line_inside?(h, 0, 10, -2)
+      assert RightAnglePolygon.horizontal_line_inside?(h, 0, 10, 2)
+    end
+
+    test "On and off outside", %{h: h} do
+      refute RightAnglePolygon.horizontal_line_inside?(h, 0, 10, -5)
+      refute RightAnglePolygon.horizontal_line_inside?(h, 0, 10, 5)
+    end
   end
 end
