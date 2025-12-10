@@ -28,6 +28,14 @@ defmodule AdventOfCode2025.Day09 do
 
   def part_b(lines) do
     points = parse_input(lines)
+    polygon = RightAnglePolygon.new(points)
+
+    points
+    |> Helpers.pairs()
+    |> Enum.sort_by(&rectangle_size/1, :desc)
+    |> Stream.filter(&RightAnglePolygon.rectangle_inside?(polygon, &1))
+    |> Enum.take(1)
+    |> then(fn [rectangle] -> rectangle_size(rectangle) end)
   end
 
   def a() do
