@@ -1,20 +1,23 @@
 defmodule AdventOfCode2025.Day10 do
   alias AdventOfCode2025.Helpers
 
-  def part_a(_lines) do
-    -1
+  def part_a(lines) do
+    lines
+    |> parse_input()
+    |> Enum.map(&min_presses/1)
+    |> Enum.sum()
   end
 
   def parse_input(lines) do
     Enum.map(lines, fn line ->
-      [lights_string, buttons_string, _joltage_string] =
+      [target_string, buttons_string, _joltage_string] =
         line
         |> String.trim_leading("[")
         |> String.trim_trailing("}")
         |> String.split(~r/\] | {/)
 
-      lights =
-        lights_string
+      target =
+        target_string
         |> String.graphemes()
         |> Enum.with_index()
         |> Enum.filter(fn {character, _index} -> character == "#" end)
@@ -34,7 +37,7 @@ defmodule AdventOfCode2025.Day10 do
         end)
 
       %{
-        lights: lights,
+        target: target,
         buttons: buttons,
         joltage: :todo
       }
@@ -43,6 +46,25 @@ defmodule AdventOfCode2025.Day10 do
 
   defp indexes_to_integer(indexes) do
     Enum.reduce(indexes, 0, fn index, acc -> acc + Integer.pow(2, index) end)
+  end
+
+  defp min_presses(stuff, state \\ 0)
+
+  defp min_presses(%{target: target}, target), do: 0
+  defp min_presses(%{buttons: []}, _), do: :infinity
+
+  defp min_presses(%{target: target, buttons: [first_b | rest_b]}, state) do
+    new_state = Bitwise.bxor(state, first_b)
+
+    min_presses_from_new_state =
+      case min_presses(%{target: target, buttons: rest_b}, new_state) do
+        :infinity -> :infinity
+        number -> number + 1
+      end
+
+    min_presses_without_new_state = min_presses(%{target: target, buttons: rest_b}, state)
+
+    min(min_presses_from_new_state, min_presses_without_new_state)
   end
 
   def part_b(_lines) do

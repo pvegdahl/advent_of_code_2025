@@ -3,9 +3,12 @@ defmodule AdventOfCode2025.Day10Test do
 
   alias AdventOfCode2025.Day10
 
-  @tag :skip
   test "Day10 part A example" do
     assert Day10.part_a(example_input()) == 7
+  end
+
+  test "part A one line" do
+    assert Day10.part_a(example_input() |> Enum.take(1)) == 2
   end
 
   defp example_input() do
@@ -23,17 +26,17 @@ defmodule AdventOfCode2025.Day10Test do
     test "examples " do
       assert [
                %{
-                 lights: 0b0110,
+                 target: 0b0110,
                  buttons: [0b1000, 0b1010, 0b0100, 0b1100, 0b0101, 0b0011],
                  joltage: _
                },
                %{
-                 lights: 0b01000,
+                 target: 0b01000,
                  buttons: _,
                  joltage: _
                },
                %{
-                 lights: 0b101110,
+                 target: 0b101110,
                  buttons: _,
                  joltage: _
                }
