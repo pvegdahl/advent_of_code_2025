@@ -33,7 +33,14 @@ defmodule AdventOfCode2025.Day09 do
     points
     |> Helpers.pairs()
     |> Enum.sort_by(&rectangle_size/1, :desc)
-    |> Stream.filter(&RightAnglePolygon.rectangle_inside?(polygon, &1))
+    |> Stream.chunk_every(500)
+    |> Task.async_stream(
+      fn chunk -> Enum.filter(chunk, &RightAnglePolygon.rectangle_inside?(polygon, &1)) end,
+      ordered: true,
+      timeout: :infinity
+    )
+    |> Stream.map(fn {:ok, result} -> result end)
+    |> Stream.concat()
     |> Enum.take(1)
     |> then(fn [rectangle] -> rectangle_size(rectangle) end)
   end
