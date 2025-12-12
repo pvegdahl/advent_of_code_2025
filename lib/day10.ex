@@ -99,7 +99,8 @@ defmodule AdventOfCode2025.Day10 do
   def part_b(lines) do
     lines
     |> parse_input()
-    |> Enum.map(&min_presses_b/1)
+    |> Stream.map(&min_presses_b/1)
+    |> Stream.each(&IO.inspect/1)
     |> Enum.sum()
   end
 
@@ -107,11 +108,12 @@ defmodule AdventOfCode2025.Day10 do
     initial_state = %{joltage: joltage, button_lists: button_lists, count: 0}
 
     queue = Queue.new() |> Queue.push(initial_state)
+    seen_joltages = MapSet.new()
 
-    min_presses_b(queue)
+    min_presses_b(queue, seen_joltages)
   end
 
-  defp min_presses_b(%Queue{} = queue) do
+  defp min_presses_b(%Queue{} = queue, seen_joltages) do
     {
       popped_queue,
       %{joltage: joltage, button_lists: button_lists, count: count}
@@ -136,13 +138,25 @@ defmodule AdventOfCode2025.Day10 do
     if Enum.any?(results, &(&1 == :success)) do
       updated_count
     else
+      new_joltage_results =
+        Enum.reject(results, fn {:continue, remaining_joltage, _sub_button_lists} ->
+          MapSet.member?(seen_joltages, remaining_joltage)
+        end)
+
       new_queue_items =
-        results
+        new_joltage_results
         |> Enum.map(fn {:continue, remaining_joltage, sub_button_lists} ->
           %{joltage: remaining_joltage, button_lists: sub_button_lists, count: updated_count}
         end)
 
-      popped_queue |> Queue.push_many(new_queue_items) |> min_presses_b()
+      new_queue = popped_queue |> Queue.push_many(new_queue_items)
+
+      new_seen_joltages =
+        Enum.map(new_joltage_results, fn {:continue, remaining_joltage, _sub_button_lists} -> remaining_joltage end)
+        |> MapSet.new()
+        |> MapSet.union(seen_joltages)
+
+      min_presses_b(new_queue, new_seen_joltages)
     end
   end
 
