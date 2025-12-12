@@ -50,4 +50,10 @@ defmodule AdventOfCode2025.Day10Test do
   test "Day10 part B example" do
     assert Day10.part_b(example_input()) == 33
   end
+
+  describe "sub_lists/1" do
+    test "makes them all" do
+      assert Day10.sub_lists([1, 2, 3]) == [[1, 2, 3], [2, 3], [3]]
+    end
+  end
 end

@@ -104,7 +104,7 @@ defmodule AdventOfCode2025.Day10 do
   end
 
   defp min_presses_b(%{joltage: joltage, button_lists: button_lists}) do
-    initial_state = %{joltage: joltage, button_lists: MapSet.new(button_lists), count: 0}
+    initial_state = %{joltage: joltage, button_lists: button_lists, count: 0}
 
     queue = Queue.new() |> Queue.push(initial_state)
 
@@ -121,36 +121,35 @@ defmodule AdventOfCode2025.Day10 do
 
     results =
       button_lists
-      |> Enum.map(fn button_list ->
+      |> sub_lists()
+      |> Enum.map(fn [button_list | _] = sub_button_lists ->
         remaining_joltage = subtract_from_joltage(joltage, button_list)
 
         cond do
-          Enum.any?(remaining_joltage, &(&1 < 0)) -> {:failure, button_list}
+          Enum.any?(remaining_joltage, &(&1 < 0)) -> :failure
           Enum.all?(remaining_joltage, &(&1 == 0)) -> :success
-          true -> {:continue, remaining_joltage}
+          true -> {:continue, remaining_joltage, sub_button_lists}
         end
       end)
+      |> Enum.reject(&(&1 == :failure))
 
     if Enum.any?(results, &(&1 == :success)) do
       updated_count
     else
-      non_viable_button_lists =
-        results
-        |> Enum.filter(&match?({:failure, _}, &1))
-        |> Enum.map(&elem(&1, 1))
-        |> MapSet.new()
-
-      viable_button_lists = MapSet.difference(button_lists, non_viable_button_lists)
-
       new_queue_items =
         results
-        |> Enum.filter(&match?({:continue, _}, &1))
-        |> Enum.map(fn {:continue, remaining_joltage} ->
-          %{joltage: remaining_joltage, button_lists: viable_button_lists, count: updated_count}
+        |> Enum.map(fn {:continue, remaining_joltage, sub_button_lists} ->
+          %{joltage: remaining_joltage, button_lists: sub_button_lists, count: updated_count}
         end)
 
       popped_queue |> Queue.push_many(new_queue_items) |> min_presses_b()
     end
+  end
+
+  def sub_lists([_] = list), do: [list]
+
+  def sub_lists([_head | tail] = list) do
+    [list | sub_lists(tail)]
   end
 
   defp subtract_from_joltage(joltage, button_list) do
