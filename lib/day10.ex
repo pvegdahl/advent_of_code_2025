@@ -1,10 +1,11 @@
 defmodule AdventOfCode2025.Day10 do
   alias AdventOfCode2025.Helpers
+  alias AdventOfCode2025.Queue
 
   def part_a(lines) do
     lines
     |> parse_input()
-    |> Enum.map(&min_presses/1)
+    |> Enum.map(&min_presses_a/1)
     |> Enum.sum()
   end
 
@@ -76,27 +77,84 @@ defmodule AdventOfCode2025.Day10 do
     Enum.reduce(indexes, 0, fn index, acc -> acc + Integer.pow(2, index) end)
   end
 
-  defp min_presses(stuff, state \\ 0)
+  defp min_presses_a(stuff, state \\ 0)
 
-  defp min_presses(%{target: target}, target), do: 0
-  defp min_presses(%{buttons: []}, _), do: :infinity
+  defp min_presses_a(%{target: target}, target), do: 0
+  defp min_presses_a(%{buttons: []}, _), do: :infinity
 
-  defp min_presses(%{target: target, buttons: [first_b | rest_b]}, state) do
+  defp min_presses_a(%{target: target, buttons: [first_b | rest_b]}, state) do
     new_state = Bitwise.bxor(state, first_b)
 
     min_presses_from_new_state =
-      case min_presses(%{target: target, buttons: rest_b}, new_state) do
+      case min_presses_a(%{target: target, buttons: rest_b}, new_state) do
         :infinity -> :infinity
         number -> number + 1
       end
 
-    min_presses_without_new_state = min_presses(%{target: target, buttons: rest_b}, state)
+    min_presses_without_new_state = min_presses_a(%{target: target, buttons: rest_b}, state)
 
     min(min_presses_from_new_state, min_presses_without_new_state)
   end
 
-  def part_b(_lines) do
-    -1
+  def part_b(lines) do
+    lines
+    |> parse_input()
+    |> Enum.map(&min_presses_b/1)
+    |> Enum.sum()
+  end
+
+  defp min_presses_b(%{joltage: joltage, button_lists: button_lists}) do
+    initial_state = %{joltage: joltage, button_lists: MapSet.new(button_lists), count: 0}
+
+    queue = Queue.new() |> Queue.push(initial_state)
+
+    min_presses_b(queue)
+  end
+
+  defp min_presses_b(%Queue{} = queue) do
+    {
+      popped_queue,
+      %{joltage: joltage, button_lists: button_lists, count: count}
+    } = Queue.pop(queue)
+
+    updated_count = count + 1
+
+    results =
+      button_lists
+      |> Enum.map(fn button_list ->
+        remaining_joltage = subtract_from_joltage(joltage, button_list)
+
+        cond do
+          Enum.any?(remaining_joltage, &(&1 < 0)) -> {:failure, button_list}
+          Enum.all?(remaining_joltage, &(&1 == 0)) -> :success
+          true -> {:continue, remaining_joltage}
+        end
+      end)
+
+    if Enum.any?(results, &(&1 == :success)) do
+      updated_count
+    else
+      non_viable_button_lists =
+        results
+        |> Enum.filter(&match?({:failure, _}, &1))
+        |> Enum.map(&elem(&1, 1))
+        |> MapSet.new()
+
+      viable_button_lists = MapSet.difference(button_lists, non_viable_button_lists)
+
+      new_queue_items =
+        results
+        |> Enum.filter(&match?({:continue, _}, &1))
+        |> Enum.map(fn {:continue, remaining_joltage} ->
+          %{joltage: remaining_joltage, button_lists: viable_button_lists, count: updated_count}
+        end)
+
+      popped_queue |> Queue.push_many(new_queue_items) |> min_presses_b()
+    end
+  end
+
+  defp subtract_from_joltage(joltage, button_list) do
+    Enum.zip_with(joltage, button_list, fn a, b -> a - b end)
   end
 
   def a() do
