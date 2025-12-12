@@ -10,7 +10,7 @@ defmodule AdventOfCode2025.Day10 do
 
   def parse_input(lines) do
     Enum.map(lines, fn line ->
-      [target_string, buttons_string, _joltage_string] =
+      [target_string, buttons_string, joltage_string] =
         line
         |> String.trim_leading("[")
         |> String.trim_trailing("}")
@@ -24,6 +24,28 @@ defmodule AdventOfCode2025.Day10 do
         |> Enum.map(fn {_character, index} -> index end)
         |> indexes_to_integer()
 
+      target_size = String.length(target_string)
+
+      button_lists =
+        buttons_string
+        |> String.split(" ")
+        |> Enum.map(fn group ->
+          button_numbers =
+            group
+            |> String.trim_leading("(")
+            |> String.trim_trailing(")")
+            |> String.split(",")
+            |> Enum.map(&String.to_integer/1)
+
+          for i <- 0..(target_size - 1) do
+            if Enum.member?(button_numbers, i) do
+              1
+            else
+              0
+            end
+          end
+        end)
+
       buttons =
         buttons_string
         |> String.split(" ")
@@ -36,10 +58,16 @@ defmodule AdventOfCode2025.Day10 do
           |> indexes_to_integer()
         end)
 
+      joltage =
+        joltage_string
+        |> String.split(",")
+        |> Enum.map(&String.to_integer/1)
+
       %{
         target: target,
         buttons: buttons,
-        joltage: :todo
+        button_lists: button_lists,
+        joltage: joltage
       }
     end)
   end
