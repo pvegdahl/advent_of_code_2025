@@ -5,6 +5,16 @@ defmodule AdventOfCode2025.Day11 do
     -1
   end
 
+  def parse_input(lines) do
+    lines
+    |> Enum.map(fn line ->
+      [key, all_values] = String.split(line, ": ")
+      values = String.split(all_values, " ")
+      {key, values}
+    end)
+    |> Map.new()
+  end
+
   def part_b(_lines) do
     -1
   end
