@@ -1,4 +1,5 @@
 defmodule AdventOfCode2025.Day11 do
+  alias AdventOfCode2025.Cache
   alias AdventOfCode2025.Helpers
 
   def part_a(lines) do
@@ -27,19 +28,36 @@ defmodule AdventOfCode2025.Day11 do
   end
 
   def part_b(lines) do
+    {:ok, cache} = Cache.init()
+
     lines
     |> parse_input()
-    |> count_paths_with_required_nodes("svr", "out", ["dac", "fft"])
+    |> count_paths_with_required_nodes_and_caching("svr", "out", ["dac", "fft"], cache)
     |> Map.get([])
   end
 
-  defp count_paths_with_required_nodes(_graph, destination, destination, required_nodes), do: %{required_nodes => 1}
+  defp count_paths_with_required_nodes_and_caching(graph, start, destination, required_nodes, cache) do
+    # Using just start as a cache key works as long as graph and destination are constant for a given cache.
+    case Cache.get(cache, start) do
+      nil ->
+        result = count_paths_with_required_nodes(graph, start, destination, required_nodes, cache)
+        Cache.put(cache, start, result)
+        result
 
-  defp count_paths_with_required_nodes(graph, start, destination, required_nodes) do
+      result ->
+        result
+    end
+  end
+
+  defp count_paths_with_required_nodes(_graph, destination, destination, required_nodes, _cache) do
+    %{required_nodes => 1}
+  end
+
+  defp count_paths_with_required_nodes(graph, start, destination, required_nodes, cache) do
     graph
     |> Map.get(start)
     |> Enum.flat_map(fn node ->
-      intermediate_result = count_paths_with_required_nodes(graph, node, destination, required_nodes)
+      intermediate_result = count_paths_with_required_nodes_and_caching(graph, node, destination, required_nodes, cache)
 
       if node in required_nodes do
         Enum.map(intermediate_result, fn {still_required_nodes, count} ->
